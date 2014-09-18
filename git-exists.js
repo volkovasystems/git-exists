@@ -41,7 +41,7 @@
 
 	@include:
 		{
-			"work@github.com/volkovasystems": "work",
+			"chore@github.com/volkovasystems": "chore",
 			"fs@nodejs": "fs"
 		}
 	@end-include
@@ -63,7 +63,7 @@ var gitExists = function gitExists( assumedDirectory, callback ){
 	}
 
 	if( assumedDirectory && 
-		fs.existSync( assumedDirectory )
+		fs.existsSync( assumedDirectory ) &&
 		fs.statSync( assumedDirectory ).isDirectory( ) )
 	{
 		process.chdir( assumedDirectory );
@@ -75,15 +75,17 @@ var gitExists = function gitExists( assumedDirectory, callback ){
 		console.warn( "reverting to using the parent directory of this module as the assumed directory" ); 
 	}
 
-	work( "git status -b --porcelain",
-		function onCheckExists( ){
-
+	chore( "git status -b --porcelain",
+		function onCheckExists( error, isValid ){
+			if( typeof callback == "function" ){
+				callback( isValid );	
+			}
 		} );
 };
 
 const GIT_EXISTS_DIRECTORY_PATTERN = /git-exists$/;
 
-var work = require( "./work/work.js" );
+var chore = require( "./chore/chore.js" );
 var fs = require( "fs" );
 
 module.exports = gitExists;
