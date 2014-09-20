@@ -76,9 +76,13 @@ var gitExists = function gitExists( assumedDirectory, callback ){
 	}
 
 	chore( "git status -b --porcelain",
-		function onCheckExists( error, isValid ){
-			if( typeof callback == "function" ){
-				callback( isValid );	
+		function onCheckExists( error, isExisting ){
+			if( error ){
+				console.error( error );
+				callback( error, false );
+
+			}else{
+				callback( null, isExisting );	
 			}
 		} );
 };
